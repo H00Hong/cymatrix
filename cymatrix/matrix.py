@@ -6,7 +6,7 @@
 from abc import ABC, abstractmethod
 from array import array as parray
 from random import random as _random
-from typing import Callable, List, Literal, Sequence, Tuple, Union, overload
+from typing import List, Literal, Sequence, Tuple, Union, overload
 
 from . import cymatrix as _cm
 from .cymatrix import cyMatrix
@@ -578,17 +578,7 @@ class Matrix(object):
         # 迭代器
         if self.ndim == 0:
             raise ValueError('0维 Matrix 不能形成迭代器')
-        self._count = 0
-        self._count_end = self.shape[0]
-        return self
-
-    def __next__(self):
-        if self._count < self._count_end:
-            result = Matrix(_cm.get_matrix_row(self.base, self._count))
-            self._count += 1
-            return result
-        else:
-            raise StopIteration
+        return MatrixIter(self)
 
     def __float__(self) -> float:
         if self.ndim == 0:
@@ -806,6 +796,24 @@ class Matrix(object):
     # def inv(self) -> 'Matrix': return Matrix(_inv(self.base))
 
 
+class MatrixIter:
+
+    def __init__(self, matrix: Matrix) -> None:
+        self.base = matrix.base
+        self._count = 0
+        self._count_end = matrix.shape[0]
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self._count < self._count_end:
+            result = Matrix(_cm.get_matrix_row(self.base, self._count))
+            self._count += 1
+            return result
+        raise StopIteration
+
+
 # %% build matrix
 def obj2cm_(obj: Union[NumberR, Array, cyMatrix, Matrix]) -> cyMatrix:
     if isinstance(obj, Matrix):
@@ -874,7 +882,7 @@ def arange(*args:int, shape: Union[tuple, list, None]=None) -> Matrix:
     return Matrix(_cm.buildFromArr(parr, *_check_shape(shape, size)))
 
 
-def linspace(*args:NumberR, shape: Union[tuple, list, None]=None) -> Matrix:
+def linspace(*args: NumberR, shape: Union[tuple, list, None]=None) -> Matrix:
     len_ = len(args)
     if len_ == 0:
         start, end, num = 0, 9, 10
@@ -907,7 +915,9 @@ def rand(*shape: int) -> Matrix:
     raise ValueError('rand: 参数数量错误')
 
 
-def concat(seq: Sequence[Matrix], axis:int=0, isColVector:bool=False) -> Matrix:
+def concat(seq: Sequence[Matrix],
+           axis: int = 0,
+           isColVector: bool = False) -> Matrix:
     res = seq[0]._copy()
     # next(seq)
     baxis = True if axis == 0 else False
@@ -1103,6 +1113,3 @@ if __name__ == '__main__':
     print(m)
     print(hash(m))
     print(hash(Matrix(m.base)))
-
-else:
-    del overload, Union, Tuple, List, Sequence, Literal, Callable

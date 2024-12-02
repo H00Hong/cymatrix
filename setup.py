@@ -7,6 +7,7 @@ from Cython.Build import cythonize
 pyversion = sys.version_info
 python_requires = f'>={pyversion.major}.{pyversion.minor},\
 <{pyversion.major}.{pyversion.minor + 1}'
+
 extensions = [Extension("cymatrix", ["cymatrix.pyx"])]
 # python setup.py build_ext --inplace
 # python setup.py bdist_wheel
@@ -27,4 +28,4 @@ setup(
     ],
     python_requires=python_requires,  # 所需的最低Python版本
     ext_modules=cythonize(extensions),
-    )
+)
