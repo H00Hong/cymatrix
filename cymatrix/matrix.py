@@ -926,13 +926,13 @@ def concat(seq: Sequence[Matrix],
     return Matrix(res)
 
 
-def matrixByIndex(m: Union[NumberR, Array, cyMatrix, Matrix], index: Array) -> Matrix:
+def matrixByIndex(m: Union[NumberR, Array, cyMatrix, Matrix], index: Array, axis: int) -> Matrix:
     if not isinstance(index, Array_):
         raise ValueError('matrixByIndex: index 必须是 list, tuple, array')
     key = parray('i')
     for i in index:
         key.append(int(i))
-    return Matrix(_cm.matrix_byindex(Matrix(m).base, key))
+    return Matrix(_cm.matrix_byindex(Matrix(m).base, key, axis))
 
 
 # %% math functions
