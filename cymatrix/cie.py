@@ -157,9 +157,7 @@ class CIEHueTransform:
         x = s[1] * fm / 4
         return asarray((x, y, (fm - x - 15 * y) / 3))
 
-    @staticmethod
-    def chs(s: Matrix) -> Matrix:
-        s = _input_check(s)
+    def _chs(self, s: Matrix) -> Matrix:
         L, u, v = s
         C = hypot(u, v)
         h = rad2deg(atan2(v, u))
@@ -250,6 +248,9 @@ class CIEHueTransform:
     def luv2xyz(self, s: Matrix) -> Matrix:
         """CIELuv to XYZ"""
         return self._luv2xyz(_input_check(s))
+
+    def chs(self, s: Matrix) -> Matrix:
+        return self._chs(_input_check(s))
 
     def xyz2yxy(self, s: Matrix) -> Matrix:
         """XYZ to Yxy"""
@@ -398,7 +399,6 @@ class CIE(CIEHueTransform):
         self.si0 = aStandardIlluminant[lam-_380][:, 1 + self.si_v]  # 当前波长下的光源功率分布
         self.xyzl0 = axyzL[self.vi_v][lam-_380].transpos()[1:]  # 当前波长和光源下的色匹配函数
         self.sxyzl = self.si0 * self.xyzl0
-        self.lam380 = cs(_380)
 
         self.data_ex = lambda x: cs(x)
 

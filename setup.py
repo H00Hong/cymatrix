@@ -13,7 +13,7 @@ extensions = [Extension('cymatrix.cymatrix', ['cymatrix/cymatrix.pyx'])]
 # python setup.py bdist_wheel
 setup(
     name='cymatrix',  # 你的包名
-    version='0.1.0',  # 版本号
+    version='0.1.1',  # 版本号
     author='Yifan Hong',  # 作者名字
     author_email='hong.yf@qq.com',  # 作者邮箱
     description='A simple matrix implementation in `Cython`',  # 简短描述
