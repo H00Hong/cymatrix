@@ -1,1 +1,4 @@
 ﻿cymatrix/__pycache__
+
+*.c
+*.cpp
